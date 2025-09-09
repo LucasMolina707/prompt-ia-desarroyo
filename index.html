@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador de Prompt Maestro</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <main class="ilh-container" data-scope="ilh">
+    <h1>🧩 Generador de Prompt Maestro</h1>
+
+    <!-- [ADD][ES] Área para pegar la plantilla HTML base -->
+    <!-- [ADD][EN] Area to paste the base HTML template -->
+    <label for="template-input">1️⃣ Plantilla HTML Base:</label>
+    <textarea id="template-input" rows="10" placeholder="Pega aquí tu plantilla HTML..."></textarea>
+
+    <!-- [ADD][ES] Contenido del proyecto (texto o HTML) -->
+    <!-- [ADD][EN] Project content (text or HTML) -->
+    <label for="content-input">2️⃣ Contenido del Proyecto:</label>
+    <textarea id="content-input" rows="10" placeholder="Pega aquí tu contenido HTML o texto..."></textarea>
+
+    <!-- [ADD][ES] Selección de tipo de contenido -->
+    <!-- [ADD][EN] Content type selection -->
+    <label>3️⃣ Tipo de Contenido:</label>
+    <div class="ilh-radio-group">
+      <label><input type="radio" name="content-type" value="html" checked/> HTML</label>
+      <label><input type="radio" name="content-type" value="text"/> Texto</label>
+    </div>
+
+    <!-- [ADD][ES] ¿Incluir estructura académica? -->
+    <!-- [ADD][EN] Include academic structure? -->
+    <label>4️⃣ ¿Incluir estructura académica?</label>
+    <div class="ilh-radio-group">
+      <label><input type="radio" name="structure" value="yes" checked/> Sí</label>
+      <label><input type="radio" name="structure" value="no"/> No</label>
+    </div>
+
+    <button id="generate-btn">🔨 Generar Prompt</button>
+    <button id="copy-prompt-btn" style="display:none;">📋 Copiar Prompt al Portapapeles</button>
+    <span id="copy-status" style="display:none; color: green;">✅ Prompt copiado</span>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
