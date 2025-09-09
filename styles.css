@@ -1,0 +1,51 @@
+[data-scope="ilh"] {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  color: #333;
+  background: #fefefe;
+}
+
+[data-scope="ilh"] h1 {
+  color: #0066cc;
+  margin-bottom: 20px;
+}
+
+[data-scope="ilh"] textarea {
+  width: 100%;
+  padding: 10px;
+  font-family: monospace;
+  margin-bottom: 15px;
+  resize: vertical;
+  min-height: 150px;
+}
+
+[data-scope="ilh"] label {
+  font-weight: bold;
+  display: block;
+  margin-top: 20px;
+}
+
+[data-scope="ilh"] .ilh-radio-group {
+  margin: 10px 0;
+}
+
+[data-scope="ilh"] button {
+  background: #28a745;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+[data-scope="ilh"] button:hover {
+  background: #218838;
+}
+
+[data-scope="ilh"] span {
+  font-weight: bold;
+}
