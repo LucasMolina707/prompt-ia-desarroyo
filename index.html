@@ -6,69 +6,141 @@
   <title>Generador de Prompt Maestro — IngLucas</title>
   <meta name="description" content="Herramienta para generar un Prompt Maestro que integra contenido en una plantilla base sin romper la estructura del sitio."/>
   <style>
-    /* ==========================
-       Estilos básicos (scope ILH)
-       ========================== */
+    /* =========================================================
+       Estilos base — Todo encapsulado en [data-scope="ilh"]
+       Objetivo: evitar solapamientos y mantener espaciados consistentes
+       ========================================================= */
     :root{
-      --bg:#0b1220; --card:#111a2b; --ink:#e8f0ff; --muted:#9bb0d1; --accent:#4cc9f0; --ok:#2bd164; --bad:#ff5964; --border:#23314e;
+      --bg:#0b1220;
+      --card:#111a2b;
+      --ink:#e8f0ff;
+      --muted:#9bb0d1;
+      --accent:#4cc9f0;
+      --ok:#2bd164;
+      --bad:#ff5964;
+      --border:#23314e;
+
+      --space-1:8px;
+      --space-2:12px;
+      --space-3:16px;
+      --space-4:20px;
+      --space-5:24px;
+      --radius:16px;
+      --radius-sm:10px;
+      --field-bg:#0e1728;
     }
-    [data-scope="ilh"]{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial; color:var(--ink); background:var(--bg); min-height:100dvh; padding:24px}
-    .ilh-wrap{max-width:1100px; margin:auto}
-    h1{margin:0 0 8px}
-    p.ilh-sub{color:var(--muted); margin-top:0}
-    .ilh-grid{display:grid; gap:16px}
-    @media(min-width:900px){ .ilh-grid{grid-template-columns:1fr 1fr} }
-    .ilh-card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px}
-    .ilh-full{grid-column:1/-1}
-    label{font-weight:600; display:block; margin:.4rem 0}
+
+    [data-scope="ilh"]{
+      box-sizing:border-box;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      min-height:100dvh;
+      padding:var(--space-5);
+    }
+    [data-scope="ilh"] *, [data-scope="ilh"] *::before, [data-scope="ilh"] *::after{
+      box-sizing:inherit;
+    }
+
+    .ilh-wrap{max-width:min(1200px, 100%); margin-inline:auto}
+    h1{margin:0 0 var(--space-1)}
+    .ilh-sub{color:var(--muted); margin:0 0 var(--space-4)}
+
+    /* Tarjetas limpias (evitamos nesting excesivo) */
+    .ilh-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:var(--space-4);
+    }
+
+    /* Grids fluidos sin solapes */
+    .ilh-grid{
+      display:grid;
+      gap:var(--space-4);
+    }
+    /* 2 columnas sólo si hay ancho suficiente */
+    @media (min-width: 960px){
+      .ilh-grid.cols-2{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    /* Controles */
+    label{font-weight:600; display:block; margin:.35rem 0 .25rem}
     input[type="text"], input[type="search"], select, textarea{
-      width:100%; padding:10px 12px; background:#0e1728; color:var(--ink); border:1px solid var(--border); border-radius:10px; font-family:ui-monospace, Menlo, Consolas, monospace
+      width:100%;
+      padding:12px 14px;
+      background:var(--field-bg);
+      color:var(--ink);
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      line-height:1.4;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
     }
-    textarea{min-height:160px; resize:vertical}
-    .ilh-row{display:flex; gap:12px; flex-wrap:wrap}
-    .ilh-row > *{flex:1}
-    .ilh-checks{display:grid; gap:8px}
+    textarea{min-height:180px; resize:vertical}
+    .ilh-row{display:flex; gap:var(--space-3); flex-wrap:wrap}
+    .ilh-row > *{flex:1 1 220px}
+
+    .ilh-checks{display:grid; gap:var(--space-2)}
     .ilh-checks label{display:flex; gap:10px; align-items:flex-start; font-weight:500}
-    .ilh-badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
-    .ilh-badge{background:#0e1728; border:1px solid var(--border); color:var(--muted); border-radius:999px; padding:4px 10px; font-size:.85rem}
-    .ilh-actions{display:flex; gap:12px; flex-wrap:wrap}
+
+    .ilh-actions{display:flex; gap:var(--space-3); flex-wrap:wrap; align-items:center}
     button{
-      background:var(--accent); color:#071120; border:0; border-radius:10px; padding:12px 16px; font-weight:700; cursor:pointer
+      background:var(--accent);
+      color:#071120;
+      border:0;
+      border-radius:var(--radius-sm);
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      min-height:44px;
     }
     button.secondary{background:#16233a; color:var(--ink); border:1px solid var(--border)}
     button.ok{background:var(--ok); color:#06210f}
-    .ilh-hint{font-size:.9rem; color:var(--muted)}
-    .ilh-preview{background:#0a1426; border:1px dashed var(--border); border-radius:14px; padding:12px; white-space:pre-wrap; overflow:auto; max-height:50vh}
-    .ilh-inline{display:inline-flex; gap:10px; align-items:center}
-    .ilh-chip{background:#12203a; color:var(--muted); padding:4px 8px; border-radius:8px; font-size:.8rem}
-    .ilh-note{border-left:3px solid var(--accent); padding-left:10px; color:var(--muted); font-size:.95rem}
+    button:focus-visible{outline:2px solid #8fd3ff; outline-offset:2px}
+
+    .ilh-hint{font-size:.92rem; color:var(--muted)}
+    .ilh-preview{
+      background:#0a1426;
+      border:1px dashed var(--border);
+      border-radius:var(--radius);
+      padding:var(--space-3);
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:55vh;
+    }
+    .ilh-chip{background:#12203a; color:var(--muted); padding:4px 8px; border-radius:8px; font-size:.82rem}
     .ilh-ok{color:var(--ok); font-weight:700}
-    .ilh-warn{color:#ffd166; font-weight:700}
+
+    /* Listas y utilidades */
+    ul{margin:0; padding-left:1.1rem}
+    .mt-2{margin-top:var(--space-2)}
+    .mt-3{margin-top:var(--space-3)}
+    .mt-4{margin-top:var(--space-4)}
+    .mb-0{margin-bottom:0}
   </style>
 </head>
 <body>
-<main class="ilh-wrap" data-scope="ilh">
-  <header class="ilh-full">
+<main class="ilh-wrap" data-scope="ilh" id="app">
+  <header class="mb-0">
     <h1>🧩 Generador de Prompt Maestro</h1>
-    <p class="ilh-sub">Integra contenido en tu plantilla sin romper header/drawer/utterances/footer/cookies. Marca tus reglas, genera, copia y a correr.</p>
+    <p class="ilh-sub">Integra contenido en tu plantilla sin romper header/drawer/utterances/footer/cookies. Marca opciones, genera y copia.</p>
   </header>
 
-  <!-- ===============================
-       1) Plantilla y contenido base
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>1) Entradas base</h2>
-    <div class="ilh-grid">
-      <div class="ilh-card">
+  <!-- 1) Entradas base -->
+  <section class="ilh-card">
+    <h2 class="mb-0">1) Entradas base</h2>
+    <p class="ilh-hint mt-2">ES: Pega tu plantilla y el contenido del proyecto. | EN: Paste your base template and project content.</p>
+    <div class="ilh-grid cols-2 mt-3">
+      <div>
         <label for="template-input">Plantilla HTML Base</label>
         <textarea id="template-input" placeholder="Pega aquí tu plantilla HTML completa..."></textarea>
-        <p class="ilh-hint">ES: La plantilla debe contener la zona donde se insertará el contenido. | EN: Template must include the insertion zone.</p>
       </div>
-      <div class="ilh-card">
+      <div>
         <label for="content-input">Contenido del Proyecto (HTML o Texto)</label>
         <textarea id="content-input" placeholder="Pega aquí tu contenido HTML o Texto..."></textarea>
-
-        <div class="ilh-row" style="margin-top:8px">
+        <div class="ilh-row mt-2">
           <div>
             <label for="content-type">Tipo de Contenido</label>
             <select id="content-type">
@@ -86,25 +158,23 @@
           <div>
             <label for="insertion-selector">Selector de inserción</label>
             <input id="insertion-selector" type="text" placeholder='Ej.: section.pane' value="section.pane"/>
-            <p class="ilh-hint">ES: Selector CSS exacto donde se permite modificar. | EN: Exact CSS selector for allowed changes.</p>
+            <p class="ilh-hint mt-2">ES: CSS selector exacto donde se permite modificar. | EN: Exact allowed CSS edit scope.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===============================
-       2) Contexto del encargo
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>2) Contexto del encargo</h2>
-    <div class="ilh-grid">
-      <div class="ilh-card">
+  <!-- 2) Contexto del encargo -->
+  <section class="ilh-card">
+    <h2 class="mb-0">2) Contexto del encargo</h2>
+    <div class="ilh-grid cols-2 mt-3">
+      <div>
         <label for="goal">Objetivo del prompt</label>
-        <input id="goal" type="text" placeholder="Ej.: Integrar un proyecto HTML en la plantilla sin romper el layout"/>
-        <label for="audience">Audiencia</label>
-        <input id="audience" type="text" placeholder="Ej.: Usuarios no técnicos de la web, equipo académico, etc."/>
-        <div class="ilh-row">
+        <input id="goal" type="text" placeholder="Ej.: Integrar un proyecto HTML en la plantilla sin romper el layout">
+        <label for="audience" class="mt-2">Audiencia</label>
+        <input id="audience" type="text" placeholder="Ej.: Usuarios no técnicos, equipo académico, etc.">
+        <div class="ilh-row mt-2">
           <div>
             <label for="tone">Tono/Estilo</label>
             <select id="tone">
@@ -135,52 +205,51 @@
           </div>
         </div>
       </div>
-      <div class="ilh-card">
+      <div>
         <label for="positive-example">Mini ejemplo de lo deseado (opcional)</label>
-        <textarea id="positive-example" placeholder="Ej.: Integrar sección con títulos H2, respetar clases y comentar ES/EN..."></textarea>
-        <label for="negative-example">Qué NO hacer (opcional)</label>
+        <textarea id="positive-example" placeholder="Ej.: Integrar sección con H2, respetar clases y comentar ES/EN..."></textarea>
+        <label for="negative-example" class="mt-2">Qué NO hacer (opcional)</label>
         <textarea id="negative-example" placeholder="Ej.: No eliminar el banner de cookies ni mover el botón de comentarios..."></textarea>
       </div>
     </div>
   </section>
 
-  <!-- ===============================
-       3) Reglas duras (palomitas)
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>3) Reglas duras (marca con palomita)</h2>
-    <div class="ilh-grid">
-      <div class="ilh-card">
-        <div class="ilh-checks" id="hard-rules-left">
-          <label><input type="checkbox" class="hr" value="No modificar ni eliminar header, menú lateral (drawer), botón de comentarios (utterances), footer ni banner de cookies." checked> No tocar header/drawer/utterances/footer/cookies.</label>
-          <label><input type="checkbox" class="hr" value="Mantener la uniformidad del sitio (clases y animaciones existentes)."> Mantener clases/animaciones existentes.</label>
-          <label><input type="checkbox" class="hr" value="Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope=&quot;ilh&quot;]." checked> Encapsular estilos con <code>.ilh-</code> o <code>[data-scope="ilh"]</code>.</label>
-          <label><input type="checkbox" class="hr" value="Garantizar HTML válido (W3C) y accesible; usar IDs únicos y alt en imágenes." checked> HTML válido + accesibilidad + IDs únicos.</label>
-          <label><input type="checkbox" class="hr" value="Compatibilidad responsive en PC y móviles sin librerías externas nuevas."> Responsive sin librerías nuevas.</label>
-        </div>
+  <!-- 3) Reglas duras -->
+  <section class="ilh-card">
+    <h2 class="mb-0">3) Reglas duras (marca con palomita)</h2>
+    <div class="ilh-grid cols-2 mt-3">
+      <div class="ilh-checks">
+        <label><input type="checkbox" class="hr" value="No modificar ni eliminar header, menú lateral (drawer), botón de comentarios (utterances), footer ni banner de cookies." checked> No tocar header/drawer/utterances/footer/cookies.</label>
+        <label><input type="checkbox" class="hr" value="Mantener la uniformidad del sitio (clases y animaciones existentes)."> Mantener clases/animaciones existentes.</label>
+        <label><input type="checkbox" class="hr" value="Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope=&quot;ilh&quot;]." checked> Encapsular estilos con <code>.ilh-</code> o <code>[data-scope="ilh"]</code>.</label>
+        <label><input type="checkbox" class="hr" value="Garantizar HTML válido (W3C) y accesible; usar IDs únicos y alt en imágenes." checked> HTML válido + accesibilidad + IDs únicos.</label>
+        <label><input type="checkbox" class="hr" value="Compatibilidad responsive en PC y móviles sin librerías externas nuevas."> Responsive sin librerías nuevas.</label>
       </div>
-      <div class="ilh-card">
-        <div class="ilh-checks" id="hard-rules-right">
-          <label><input type="checkbox" class="hr" value="Evitar sobrescribir variables globales o estilos base del sitio." checked> No sobrescribir variables/globales.</label>
-          <label><input type="checkbox" class="hr" value="Comentarios bilingües ES/EN en el código entregado."> Comentarios bilingües ES/EN.</label>
-          <label><input type="checkbox" class="hr" value="Sanitizar/escapar scripts dentro del contenido si viene como texto." checked> Sanitizar scripts en contenido de texto.</label>
-          <label><input type="checkbox" class="hr" value="No insertar iframes externos sin aviso; marcar como &quot;requiere revisión&quot;."> Iframes externos: marcar “requiere revisión”.</label>
-          <label><input type="checkbox" class="hr" value="Evitar estilos inline salvo justificación explícita." > Evitar estilos inline.</label>
-        </div>
+      <div class="ilh-checks">
+        <label><input type="checkbox" class="hr" value="Evitar sobrescribir variables globales o estilos base del sitio." checked> No sobrescribir variables/globales.</label>
+        <label><input type="checkbox" class="hr" value="Comentarios bilingües ES/EN en el código entregado."> Comentarios bilingües ES/EN.</label>
+        <label><input type="checkbox" class="hr" value="Sanitizar/escapar scripts dentro del contenido si viene como texto." checked> Sanitizar scripts en contenido de texto.</label>
+        <label><input type="checkbox" class="hr" value="No insertar iframes externos sin aviso; marcar como &quot;requiere revisión&quot;."> Iframes externos: marcar “requiere revisión”.</label>
+        <label><input type="checkbox" class="hr" value="Evitar estilos inline salvo justificación explícita."> Evitar estilos inline.</label>
       </div>
     </div>
-    <div class="ilh-badges">
-      <span class="ilh-badge">✔ Reglas duras = el modelo NO las negocia</span>
-      <span class="ilh-badge">✔ Se reflejan tal cual en el prompt</span>
+    <p class="ilh-hint mt-2">ES: Estas reglas se pegan tal cual en el prompt. | EN: These rules are copied verbatim into the prompt.</p>
+  </section>
+
+  <!-- 4) Integraciones de la plantilla base (NUEVO) -->
+  <section class="ilh-card">
+    <h2 class="mb-0">4) Integraciones de la plantilla base (animaciones)</h2>
+    <p class="ilh-hint mt-2">ES: Indica si se debe garantizar la integración de los botones y sus animaciones originales. | EN: Indicate whether to guarantee original buttons + animations integration.</p>
+    <div class="ilh-checks mt-2">
+      <label><input type="checkbox" id="integrate-menu"> Integrar <strong>botón de menú (drawer)</strong> con su animación de la plantilla base.</label>
+      <label><input type="checkbox" id="integrate-comments"> Integrar <strong>botón de comentarios (utterances)</strong> con sus animaciones de la plantilla base.</label>
     </div>
   </section>
 
-  <!-- ===============================
-       4) Presets y acciones
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>4) Presets y acciones</h2>
-    <div class="ilh-row">
+  <!-- 5) Presets y acciones -->
+  <section class="ilh-card">
+    <h2 class="mb-0">5) Presets y acciones</h2>
+    <div class="ilh-row mt-2">
       <div class="ilh-row" style="flex:2">
         <div>
           <label for="preset">Preset</label>
@@ -204,23 +273,19 @@
         <span id="copy-status" class="ilh-ok" style="display:none;">✅ Copiado</span>
       </div>
     </div>
-    <p class="ilh-note">ES: Los presets se guardan en <em>localStorage</em> del navegador. | EN: Presets persist in browser localStorage.</p>
+    <p class="ilh-hint mt-2">ES: Presets en <em>localStorage</em> del navegador. | EN: Presets persist in browser localStorage.</p>
   </section>
 
-  <!-- ===============================
-       5) Vista previa del prompt
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>5) Vista previa del Prompt</h2>
-    <div id="prompt-preview" class="ilh-preview">Genera el prompt para verlo aquí…</div>
+  <!-- 6) Vista previa -->
+  <section class="ilh-card">
+    <h2 class="mb-0">6) Vista previa del Prompt</h2>
+    <div id="prompt-preview" class="ilh-preview mt-2">Genera el prompt para verlo aquí…</div>
   </section>
 
-  <!-- ===============================
-       6) Checklist final
-       =============================== -->
-  <section class="ilh-card ilh-full">
-    <h2>6) Checklist automático</h2>
-    <ul id="auto-checklist">
+  <!-- 7) Checklist automático -->
+  <section class="ilh-card">
+    <h2 class="mb-0">7) Checklist automático</h2>
+    <ul id="auto-checklist" class="mt-2">
       <li>1) Plantilla presente: <span id="chk-template" class="ilh-chip">pendiente</span></li>
       <li>2) Contenido presente: <span id="chk-content" class="ilh-chip">pendiente</span></li>
       <li>3) Selector de inserción: <span id="chk-selector" class="ilh-chip">pendiente</span></li>
@@ -232,19 +297,18 @@
 
 <script>
   // ===============================
-  // Utilidades
+  // Utilidades básicas
   // ===============================
-  const $ = sel => document.querySelector(sel);
-  const $$ = sel => Array.from(document.querySelectorAll(sel));
+  const $  = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
 
   function convertTextToHTML(text){
-    // ES: Convierte texto plano a párrafos HTML simples.
-    // EN: Convert plain text to simple HTML paragraphs.
-    const safe = text
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
-    const chunks = safe.trim().split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g,'<br/>')}</p>`);
-    return `<section data-scope="ilh">\n${chunks.join('\n')}\n</section>`;
+    // ES: Convierte texto simple en párrafos HTML seguros
+    // EN: Convert plain text to safe HTML paragraphs
+    const safe = text.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim();
+    if(!safe) return '<section data-scope="ilh"></section>';
+    const chunks = safe.split(/\\n{2,}/).map(p => `<p>${p.replace(/\\n/g,'<br/>')}</p>`);
+    return `<section data-scope="ilh">\\n${chunks.join('\\n')}\\n</section>`;
   }
 
   function wrapAcademicStructure(contentHTML){
@@ -269,40 +333,59 @@
   function getCheckedRules(){
     return $$('.hr').filter(i=>i.checked).map(i=>i.value);
   }
-
   function summarizeRules(rules){
-    return rules.length ? '• ' + rules.join('\n• ') : '—';
+    return rules.length ? '• ' + rules.join('\\n• ') : '—';
   }
+  function short(v, fb='—'){ return (v||'').trim() ? v.trim() : fb; }
 
-  function short(value, fallback='—'){
-    return (value||'').trim() ? value.trim() : fallback;
-  }
-
+  // ===============================
+  // Checklist en vivo
+  // ===============================
   function updateChecklist(){
     $('#chk-template').textContent = $('#template-input').value.trim() ? 'ok' : 'pendiente';
     $('#chk-content').textContent  = $('#content-input').value.trim() ? 'ok' : 'pendiente';
     $('#chk-selector').textContent = $('#insertion-selector').value.trim() ? 'ok' : 'pendiente';
-    const rulesOK = getCheckedRules().length >= 3;
-    $('#chk-rules').textContent    = rulesOK ? 'ok' : 'pendiente';
+    $('#chk-rules').textContent    = getCheckedRules().length >= 3 ? 'ok' : 'pendiente';
     const ctxOK = $('#goal').value.trim() || $('#audience').value.trim();
     $('#chk-context').textContent  = ctxOK ? 'ok' : 'pendiente';
   }
+  ['template-input','content-input','insertion-selector','goal','audience'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', updateChecklist);
+  });
+  $$('.hr').forEach(c=>c.addEventListener('change', updateChecklist));
+  $$('#integrate-menu, #integrate-comments').forEach(c=>c.addEventListener('change', ()=>{}));
+  updateChecklist();
 
   // ===============================
-  // Presets básicos
+  // Presets
   // ===============================
   const builtInPresets = {
     html_puro: {
       structure:'no', tone:'Directo y técnico', format:'HTML completo', length:'Breve',
-      rules:['Mantener la uniformidad del sitio (clases y animaciones existentes).','Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope="ilh"].','Garantizar HTML válido (W3C) y accesible; usar IDs únicos y alt en imágenes.']
+      rules:[
+        'Mantener la uniformidad del sitio (clases y animaciones existentes).',
+        'Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope="ilh"].',
+        'Garantizar HTML válido (W3C) y accesible; usar IDs únicos y alt en imágenes.'
+      ],
+      integrates:{menu:true, comments:false}
     },
     informe_academico: {
       structure:'yes', tone:'Formal docente', format:'HTML completo', length:'Larga',
-      rules:['No modificar ni eliminar header, menú lateral (drawer), botón de comentarios (utterances), footer ni banner de cookies.','Comentarios bilingües ES/EN en el código entregado.','Evitar sobrescribir variables globales o estilos base del sitio.']
+      rules:[
+        'No modificar ni eliminar header, menú lateral (drawer), botón de comentarios (utterances), footer ni banner de cookies.',
+        'Comentarios bilingües ES/EN en el código entregado.',
+        'Evitar sobrescribir variables globales o estilos base del sitio.'
+      ],
+      integrates:{menu:true, comments:true}
     },
     pagina_marketing: {
       structure:'no', tone:'Marketing persuasivo', format:'HTML completo', length:'Media',
-      rules:['Mantener la uniformidad del sitio (clases y animaciones existentes).','No insertar iframes externos sin aviso; marcar como "requiere revisión".','Evitar estilos inline salvo justificación explícita.']
+      rules:[
+        'Mantener la uniformidad del sitio (clases y animaciones existentes).',
+        'No insertar iframes externos sin aviso; marcar como "requiere revisión".',
+        'Evitar estilos inline salvo justificación explícita.'
+      ],
+      integrates:{menu:true, comments:false}
     }
   };
 
@@ -312,17 +395,18 @@
     $('#tone').value      = p.tone || 'Neutro';
     $('#format').value    = p.format || 'HTML completo';
     $('#length').value    = p.length || 'Media';
-
-    // Desmarcar todo y marcar los del preset
+    // Reglas
     $$('.hr').forEach(c=>c.checked=false);
     (p.rules||[]).forEach(v=>{
       const box = $$('.hr').find(c=>c.value===v);
       if(box) box.checked = true;
     });
+    // Integraciones
+    $('#integrate-menu').checked     = !!(p.integrates && p.integrates.menu);
+    $('#integrate-comments').checked = !!(p.integrates && p.integrates.comments);
     updateChecklist();
   }
 
-  // LocalStorage helpers
   function saveCustomPreset(name){
     if(!name.trim()){ alert('Pon un nombre para el preset.'); return; }
     const data = {
@@ -330,17 +414,34 @@
       tone: $('#tone').value,
       format: $('#format').value,
       length: $('#length').value,
-      rules: getCheckedRules()
+      rules: getCheckedRules(),
+      integrates: {
+        menu: $('#integrate-menu').checked,
+        comments: $('#integrate-comments').checked
+      }
     };
     localStorage.setItem('ilh-preset-'+name, JSON.stringify(data));
     alert('Preset guardado: ' + name);
   }
-
   function loadCustomPreset(name){
     const raw = localStorage.getItem('ilh-preset-'+name);
     if(!raw){ alert('No existe preset con ese nombre.'); return; }
     applyPresetData(JSON.parse(raw));
   }
+
+  $('#apply-preset').addEventListener('click', ()=>{
+    const val = $('#preset').value;
+    if(val==='custom'){
+      const name = prompt('Nombre de preset a cargar (guardado por ti):');
+      if(name){ loadCustomPreset(name); }
+    }else{
+      applyPresetData(builtInPresets[val]);
+    }
+  });
+  $('#save-preset').addEventListener('click', ()=>{
+    const name = $('#preset-name').value || prompt('Nombre para el preset:');
+    if(name){ saveCustomPreset(name); }
+  });
 
   // ===============================
   // Generación del Prompt
@@ -362,7 +463,10 @@
     const posEx = $('#positive-example').value;
     const negEx = $('#negative-example').value;
 
-    // Validaciones mínimas
+    const integrateMenu = $('#integrate-menu').checked;
+    const integrateComments = $('#integrate-comments').checked;
+
+    // Validaciones básicas
     if(!template.trim()){ alert('Falta la plantilla base.'); return ''; }
     if(!contentRaw.trim()){ alert('Falta el contenido del proyecto.'); return ''; }
     if(!insertionSelector.trim()){ alert('Falta el selector de inserción.'); return ''; }
@@ -374,7 +478,23 @@
     }
 
     const hardRules = getCheckedRules();
-    const hardRulesSummary = summarizeRules(hardRules);
+    // Agrega reglas específicas si marcaste integraciones
+    if(integrateMenu){
+      hardRules.push('Mantener y/o reconectar el botón de menú (drawer) con su animación original de la plantilla base.');
+    }
+    if(integrateComments){
+      hardRules.push('Mantener y/o reconectar el botón de comentarios (utterances) con sus animaciones originales de la plantilla base.');
+    }
+    // Quitar duplicados
+    const hardRulesUnique = [...new Set(hardRules)];
+    const hardRulesSummary = hardRulesUnique.length ? '• ' + hardRulesUnique.join('\\n• ') : '—';
+
+    const opcionesSel = [
+      `Estructura académica: ${structure === 'yes' ? 'Sí / Yes' : 'No'}`,
+      `Tipo de contenido: ${contentType === 'text' ? 'Texto (convertir a HTML)' : 'HTML directo'}`,
+      `Integración botón de menú (drawer + animación): ${integrateMenu ? 'Sí / Yes' : 'No'}`,
+      `Integración botón de comentarios (utterances + animaciones): ${integrateComments ? 'Sí / Yes' : 'No'}`
+    ].join('\\n- ');
 
     const prompt =
 `📝 Prompt Maestro para integración de contenido en plantilla base
@@ -401,8 +521,7 @@ Zonas de edición / Edit scopes:
 - EN: Only modify content within the specified selector. No other block must be changed.
 
 🔧 Opciones seleccionadas / Selected options:
-- Estructura académica: ${structure === 'yes' ? 'Sí / Yes' : 'No'}
-- Tipo de contenido: ${contentType === 'text' ? 'Texto (convertir a HTML)' : 'HTML directo'}
+- ${opcionesSel}
 
 ✅ Checklist que debes confirmar antes de devolver / Must confirm before delivering:
 1) Header, drawer, utterances, footer, cookies intactos.
@@ -411,6 +530,8 @@ Zonas de edición / Edit scopes:
 4) Estilos nuevos encapsulados (.ilh- o [data-scope="ilh"]).
 5) Responsive funcional en PC y móviles.
 6) Comentarios ES/EN añadidos.
+${integrateMenu ? '7) El botón de menú (drawer) mantiene su animación y funcionalidad original.' : ''}
+${integrateComments ? '8) El botón de comentarios (utterances) mantiene sus animaciones y funcionalidad original.' : ''}
 
 Ejemplo positivo (opcional) / Positive example (optional):
 ${short(posEx, '—')}
@@ -427,40 +548,15 @@ ${template}
     return prompt;
   }
 
-  // ===============================
-  // Eventos UI
-  // ===============================
-  $$('#template-input, #content-input, #insertion-selector, #goal, #audience, #tone, #format, #length, #positive-example, #negative-example, #structure, #content-type'.replaceAll('#','.#')).forEach(()=>{});
-  // (El hack anterior no afecta; actualizamos checklist en entradas clave)
-  ['template-input','content-input','insertion-selector','goal','audience'].forEach(id=>{
-    document.getElementById(id).addEventListener('input', updateChecklist);
-  });
-  $$('.hr').forEach(c=>c.addEventListener('change', updateChecklist));
-
-  $('#apply-preset').addEventListener('click', ()=>{
-    const val = $('#preset').value;
-    if(val==='custom'){
-      const name = prompt('Nombre de preset a cargar (guardado por ti):');
-      if(name){ loadCustomPreset(name); }
-    }else{
-      applyPresetData(builtInPresets[val]);
-    }
-  });
-
-  $('#save-preset').addEventListener('click', ()=>{
-    const name = $('#preset-name').value || prompt('Nombre para el preset:');
-    if(name){ saveCustomPreset(name); }
-  });
-
+  // Eventos
   $('#generate-btn').addEventListener('click', ()=>{
-    const prompt = buildPrompt();
-    if(!prompt) return;
-    lastPrompt = prompt;
-    $('#prompt-preview').textContent = prompt;
+    const p = buildPrompt();
+    if(!p) return;
+    lastPrompt = p;
+    $('#prompt-preview').textContent = p;
     $('#copy-prompt-btn').style.display = 'inline-block';
     updateChecklist();
   });
-
   $('#copy-prompt-btn').addEventListener('click', ()=>{
     if(!lastPrompt){ alert('Primero genera el prompt.'); return; }
     navigator.clipboard.writeText(lastPrompt).then(()=>{
@@ -470,8 +566,20 @@ ${template}
     });
   });
 
-  // Arranque
-  updateChecklist();
+  // Presets botones
+  $('#apply-preset').addEventListener('click', ()=>{
+    const val = $('#preset').value;
+    if(val==='custom'){
+      const name = prompt('Nombre de preset a cargar (guardado por ti):');
+      if(name){ loadCustomPreset(name); }
+    }else{
+      applyPresetData(builtInPresets[val]);
+    }
+  });
+  $('#save-preset').addEventListener('click', ()=>{
+    const name = $('#preset-name').value || prompt('Nombre para el preset:');
+    if(name){ saveCustomPreset(name); }
+  });
 </script>
 </body>
 </html>
