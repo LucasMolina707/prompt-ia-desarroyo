@@ -46,7 +46,7 @@
     h1{margin:0 0 var(--space-1)}
     .ilh-sub{color:var(--muted); margin:0 0 var(--space-4)}
 
-    /* Tarjetas limpias (evitamos nesting excesivo) */
+    /* Tarjetas limpias (evitamos anidado excesivo) */
     .ilh-card{
       background:var(--card);
       border:1px solid var(--border);
@@ -54,12 +54,12 @@
       padding:var(--space-4);
     }
 
-    /* Grids fluidos sin solapes */
+    /* Grids fluidos sin solapamientos */
     .ilh-grid{
       display:grid;
       gap:var(--space-4);
     }
-    /* 2 columnas sólo si hay ancho suficiente */
+    /* 2 columnas solo si hay ancho suficiente */
     @media (min-width: 960px){
       .ilh-grid.cols-2{
         grid-template-columns:1fr 1fr;
@@ -134,15 +134,15 @@
     <p class="ilh-hint mt-2">ES: Pega tu plantilla y el contenido del proyecto. | EN: Paste your base template and project content.</p>
     <div class="ilh-grid cols-2 mt-3">
       <div>
-        <label for="template-input">Plantilla HTML Base</label>
+        <label for="template-input">Plantilla HTML base</label>
         <textarea id="template-input" placeholder="Pega aquí tu plantilla HTML completa..."></textarea>
       </div>
       <div>
-        <label for="content-input">Contenido del Proyecto (HTML o Texto)</label>
-        <textarea id="content-input" placeholder="Pega aquí tu contenido HTML o Texto..."></textarea>
+        <label for="content-input">Contenido del proyecto (HTML o texto)</label>
+        <textarea id="content-input" placeholder="Pega aquí tu contenido HTML o texto..."></textarea>
         <div class="ilh-row mt-2">
           <div>
-            <label for="content-type">Tipo de Contenido</label>
+            <label for="content-type">Tipo de contenido</label>
             <select id="content-type">
               <option value="html" selected>HTML</option>
               <option value="text">Texto (convertir a HTML limpio)</option>
@@ -158,7 +158,7 @@
           <div>
             <label for="insertion-selector">Selector de inserción</label>
             <input id="insertion-selector" type="text" placeholder='Ej.: section.pane' value="section.pane"/>
-            <p class="ilh-hint mt-2">ES: CSS selector exacto donde se permite modificar. | EN: Exact allowed CSS edit scope.</p>
+            <p class="ilh-hint mt-2">ES: Selector CSS exacto donde se permite modificar. | EN: Exact allowed CSS edit scope.</p>
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@
         <input id="audience" type="text" placeholder="Ej.: Usuarios no técnicos, equipo académico, etc.">
         <div class="ilh-row mt-2">
           <div>
-            <label for="tone">Tono/Estilo</label>
+            <label for="tone">Tono/estilo</label>
             <select id="tone">
               <option>Formal docente</option>
               <option selected>Directo y técnico</option>
@@ -221,7 +221,7 @@
       <div class="ilh-checks">
         <label><input type="checkbox" class="hr" value="No modificar ni eliminar header, menú lateral (drawer), botón de comentarios (utterances), footer ni banner de cookies." checked> No tocar header/drawer/utterances/footer/cookies.</label>
         <label><input type="checkbox" class="hr" value="Mantener la uniformidad del sitio (clases y animaciones existentes)."> Mantener clases/animaciones existentes.</label>
-        <label><input type="checkbox" class="hr" value="Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope=&quot;ilh&quot;]." checked> Encapsular estilos con <code>.ilh-</code> o <code>[data-scope="ilh"]</code>.</label>
+        <label><input type="checkbox" class="hr" value="Encapsular nuevos estilos con prefijo .ilh- o dentro de [data-scope=&quot;ilh&quot;]." checked> Encapsular estilos con <code>.ilh-</code> o <code>[data-scope=&quot;ilh&quot;]</code>.</label>
         <label><input type="checkbox" class="hr" value="Garantizar HTML válido (W3C) y accesible; usar IDs únicos y alt en imágenes." checked> HTML válido + accesibilidad + IDs únicos.</label>
         <label><input type="checkbox" class="hr" value="Compatibilidad responsive en PC y móviles sin librerías externas nuevas."> Responsive sin librerías nuevas.</label>
       </div>
@@ -257,28 +257,28 @@
             <option value="custom" selected>— Personalizado —</option>
             <option value="html_puro">Insertar HTML puro</option>
             <option value="informe_academico">Informe académico</option>
-            <option value="pagina_marketing">Página rápida marketing</option>
+            <option value="pagina_marketing">Página de marketing rápida</option>
           </select>
         </div>
         <div>
-          <label for="preset-name">Nombre para guardar preset</label>
+          <label for="preset-name">Nombre para guardar el preset</label>
           <input id="preset-name" type="text" placeholder="Ej.: Trabajo SO v1"/>
         </div>
       </div>
       <div class="ilh-actions">
         <button id="apply-preset" class="secondary">Aplicar preset</button>
         <button id="save-preset" class="secondary">Guardar preset</button>
-        <button id="generate-btn">🔨 Generar Prompt</button>
-        <button id="copy-prompt-btn" class="ok" style="display:none;">📋 Copiar Prompt</button>
+        <button id="generate-btn">🔨 Generar prompt</button>
+        <button id="copy-prompt-btn" class="ok" style="display:none;">📋 Copiar prompt</button>
         <span id="copy-status" class="ilh-ok" style="display:none;">✅ Copiado</span>
       </div>
     </div>
-    <p class="ilh-hint mt-2">ES: Presets en <em>localStorage</em> del navegador. | EN: Presets persist in browser localStorage.</p>
+    <p class="ilh-hint mt-2">ES: Los presets se guardan en el <em>localStorage</em> del navegador. | EN: Presets persist in browser localStorage.</p>
   </section>
 
   <!-- 6) Vista previa -->
   <section class="ilh-card">
-    <h2 class="mb-0">6) Vista previa del Prompt</h2>
+    <h2 class="mb-0">6) Vista previa del prompt</h2>
     <div id="prompt-preview" class="ilh-preview mt-2">Genera el prompt para verlo aquí…</div>
   </section>
 
@@ -425,14 +425,14 @@
   }
   function loadCustomPreset(name){
     const raw = localStorage.getItem('ilh-preset-'+name);
-    if(!raw){ alert('No existe preset con ese nombre.'); return; }
+    if(!raw){ alert('No existe un preset con ese nombre.'); return; }
     applyPresetData(JSON.parse(raw));
   }
 
   $('#apply-preset').addEventListener('click', ()=>{
     const val = $('#preset').value;
     if(val==='custom'){
-      const name = prompt('Nombre de preset a cargar (guardado por ti):');
+      const name = prompt('Nombre del preset a cargar (guardado por ti):');
       if(name){ loadCustomPreset(name); }
     }else{
       applyPresetData(builtInPresets[val]);
@@ -444,7 +444,7 @@
   });
 
   // ===============================
-  // Generación del Prompt
+  // Generación del prompt
   // ===============================
   let lastPrompt = '';
 
@@ -500,10 +500,10 @@
 `📝 Prompt Maestro para integración de contenido en plantilla base
 ________________________________________
 Propósito / Purpose:
-- ES: ${short(goal,'Integrar contenido en plantilla base sin romper estructura.')}
-- EN: ${short(goal,'Integrate project content into the base template without breaking structure.')}
+- ES: ${short(goal,'Integrar contenido en plantilla base sin romper la estructura.')}
+- EN: ${short(goal,'Integrate project content into the base template without breaking the layout.')}
 
-Audiencia / Audience: ${short(audience,'Mixto / General')}
+Audiencia / Audience: ${short(audience,'Mixta / General')}
 Tono / Tone: ${tone}
 Formato de salida / Output format: ${format}
 Longitud / Length: ${length}
@@ -524,14 +524,14 @@ Zonas de edición / Edit scopes:
 - ${opcionesSel}
 
 ✅ Checklist que debes confirmar antes de devolver / Must confirm before delivering:
-1) Header, drawer, utterances, footer, cookies intactos.
+1) Header, drawer, utterances, footer y cookies intactos.
 2) Inserción realizada ÚNICAMENTE en "${insertionSelector}".
-3) HTML válido + accesible; sin IDs duplicados.
+3) HTML válido y accesible; sin IDs duplicados.
 4) Estilos nuevos encapsulados (.ilh- o [data-scope="ilh"]).
 5) Responsive funcional en PC y móviles.
 6) Comentarios ES/EN añadidos.
-${integrateMenu ? '7) El botón de menú (drawer) mantiene su animación y funcionalidad original.' : ''}
-${integrateComments ? '8) El botón de comentarios (utterances) mantiene sus animaciones y funcionalidad original.' : ''}
+${integrateMenu ? '7) El botón de menú (drawer) mantiene su animación y funcionalidad originales.' : ''}
+${integrateComments ? '8) El botón de comentarios (utterances) mantiene sus animaciones y funcionalidad originales.' : ''}
 
 Ejemplo positivo (opcional) / Positive example (optional):
 ${short(posEx, '—')}
@@ -558,7 +558,7 @@ ${template}
     updateChecklist();
   });
   $('#copy-prompt-btn').addEventListener('click', ()=>{
-    if(!lastPrompt){ alert('Primero genera el prompt.'); return; }
+    if(!lastPrompt){ alert('Primero, genera el prompt.'); return; }
     navigator.clipboard.writeText(lastPrompt).then(()=>{
       const el = $('#copy-status');
       el.style.display = 'inline-block';
@@ -566,11 +566,11 @@ ${template}
     });
   });
 
-  // Presets botones
+  // Presets (accesos rápidos ya declarados arriba)
   $('#apply-preset').addEventListener('click', ()=>{
     const val = $('#preset').value;
     if(val==='custom'){
-      const name = prompt('Nombre de preset a cargar (guardado por ti):');
+      const name = prompt('Nombre del preset a cargar (guardado por ti):');
       if(name){ loadCustomPreset(name); }
     }else{
       applyPresetData(builtInPresets[val]);
